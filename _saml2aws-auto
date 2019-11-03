@@ -1,0 +1,36 @@
+#compdef saml2aws-auto
+
+_saml2aws-auto_refresh() {
+  local -a groups
+  groups=$(grep -v "accounts" ~/.saml2aws-auto.yml | grep '^[[:space:]]\{2\}\(.*\):$' | tr -d ' :')
+
+  _alternative "argument:group:($groups)"
+}
+
+_saml2aws-auto() {
+  local line
+
+  _commands() {
+    local -a commands
+    commands=(
+      'refresh:Refreshes all credentials for a group'
+      'configure:Configure saml2aws-auto settings like your IDP'
+      'help:Prints this message or the help of the given subcommand(s)'
+      'version:Displays the version'
+      'groups:Manage role groups'
+    )
+    _describe 'command' commands
+  }
+
+  _arguments -C \
+    "1: :_commands" \
+    "*::arg:->args"
+
+  case $line[1] in
+    refresh)
+      _saml2aws-auto_refresh
+    ;;
+  esac
+}
+
+_saml2aws-auto
