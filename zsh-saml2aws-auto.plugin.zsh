@@ -11,12 +11,12 @@ aws_profile() {
 
     if [[ ${result} != "" ]]; then
       # Profile is configured
-      local current_timestamp=`date +%s`
-      local valid_until=`grep -A2 "$AWS_PROFILE" ~/.saml2aws-auto.yml \
+      local current_timestamp=$(date +%s)
+      local valid_until=$(grep -A2 "$AWS_PROFILE" ~/.saml2aws-auto.yml \
         | awk '{ if($1 == "valid_until:") { print $2 } }' \
-        | tr -d '"'`
+        | tr -d '"')
 
-      local valid_until_timestamp=$(date -j -f "%Y-%m-%dT%H:%M:%S+00:00" ${valid_until} +%s)
+      local valid_until_timestamp=$(TZ=GMT+0:00 date -j -f "%Y-%m-%dT%H:%M:%S+00:00" ${valid_until} +%s)
 
       if [[ $current_timestamp -le $valid_until_timestamp ]]; then
         # Token is still valid
